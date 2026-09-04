@@ -19,6 +19,7 @@ dist-ssr/
 !.env.example
 *.pem
 *.key
+DESIGN.md
 
 # Operating System & IDE
 .DS_Store
