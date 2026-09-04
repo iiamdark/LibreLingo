@@ -1,0 +1,22 @@
+{
+  "name": "librelingo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Cross-platform open-source desktop translator built with Rust and Tauri",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "lucide": "^0.439.0"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0",
+    "typescript": "^5.4.5",
+    "vite": "^5.3.4"
+  }
+}
