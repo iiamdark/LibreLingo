@@ -960,3 +960,351 @@ button, input, select, textarea {
   gap: 12px;
   font-size: 0.9rem;
 }
+
+/* ==========================================================================
+   Phase 2 Styles: File Translation, OCR, Vocabulary, Glossary, Spotlight Mode
+   ========================================================================== */
+
+/* Header Divider & Active Pin */
+.header-divider {
+  width: 1px;
+  height: 20px;
+  background-color: var(--border-subtle);
+  margin: 0 4px;
+}
+
+.icon-btn.active-pin {
+  color: var(--color-iris-gleam);
+  background-color: rgba(132, 125, 255, 0.14);
+  border-color: var(--color-iris-gleam);
+  box-shadow: 0 0 10px rgba(132, 125, 255, 0.35);
+}
+
+/* Formality / Tone Segmented Control */
+.formality-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.formality-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-fog);
+}
+
+.formality-chips {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background-color: var(--color-abyss);
+  border: 1px solid var(--border-subtle);
+  padding: 3px;
+  border-radius: var(--radius-pill);
+}
+
+.formality-chip {
+  background: transparent;
+  border: none;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-ash);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: all var(--transition-speed);
+}
+
+.formality-chip:hover {
+  color: var(--color-pure);
+}
+
+.formality-chip.active {
+  background-color: var(--color-pure);
+  color: var(--color-void);
+  font-weight: 600;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+
+/* Action Chip Favorited State */
+.action-chip.favorited {
+  border-color: var(--color-iris-gleam);
+  color: var(--color-iris-gleam);
+  background-color: rgba(132, 125, 255, 0.12);
+}
+
+/* OCR Badges & Overlays */
+.ocr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-iris-gleam);
+  background-color: rgba(132, 125, 255, 0.08);
+  border: 1px solid rgba(132, 125, 255, 0.2);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.ocr-overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(9, 10, 11, 0.82);
+  backdrop-filter: blur(4px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border-radius: var(--radius-md);
+  color: var(--color-pure);
+  font-size: 0.88rem;
+  font-weight: 500;
+  z-index: 10;
+}
+
+.pane.ocr-drag-over {
+  border-color: var(--color-iris-gleam) !important;
+  box-shadow: 0 0 16px rgba(132, 125, 255, 0.25) !important;
+}
+
+/* File Drop Zone (Document & Subtitle Translator) */
+.file-drop-zone {
+  border: 2px dashed rgba(255, 255, 255, 0.14);
+  border-radius: var(--radius-md);
+  padding: 36px 20px;
+  text-align: center;
+  cursor: pointer;
+  background-color: var(--color-abyss);
+  transition: all var(--transition-speed);
+}
+
+.file-drop-zone:hover, .file-drop-zone.drag-over {
+  border-color: var(--color-iris-gleam);
+  background-color: rgba(132, 125, 255, 0.04);
+}
+
+.drop-zone-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.selected-file-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background-color: var(--color-abyss);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--color-iris-deep), var(--color-iris-gleam));
+  transition: width 0.3s ease;
+  border-radius: var(--radius-pill);
+}
+
+/* Vocabulary Drawer & Cards */
+.drawer-subbar {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.drawer-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.vocabulary-card {
+  background-color: var(--color-abyss);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  cursor: pointer;
+  transition: border-color var(--transition-speed);
+}
+
+.vocabulary-card:hover {
+  border-color: var(--color-iris-gleam);
+}
+
+.vocabulary-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.vocab-lang-badge {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--color-iris-gleam);
+  background-color: rgba(132, 125, 255, 0.12);
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.vocabulary-card-source {
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: var(--color-pure);
+  margin-bottom: 4px;
+}
+
+.vocabulary-card-target {
+  font-size: 0.88rem;
+  color: var(--color-ash);
+}
+
+.icon-btn-sm {
+  width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  border: none;
+  background: transparent;
+  color: var(--color-fog);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-speed);
+}
+
+.icon-btn-sm:hover {
+  color: var(--color-error);
+  background-color: var(--color-error-bg);
+}
+
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 0.8rem;
+}
+
+/* Custom Glossary Modal & Table */
+.glossary-input-card {
+  background-color: var(--color-abyss);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 16px;
+}
+
+.glossary-input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.glossary-table {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 220px;
+  overflow-y: auto;
+  margin-top: 8px;
+}
+
+.glossary-header-row {
+  display: grid;
+  grid-template-columns: 1fr 20px 1fr 45px 36px;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--color-fog);
+  padding: 4px 10px;
+}
+
+.glossary-row {
+  display: grid;
+  grid-template-columns: 1fr 20px 1fr 45px 36px;
+  align-items: center;
+  padding: 8px 10px;
+  background-color: var(--color-abyss);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+
+.glossary-badge {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.glossary-badge.source {
+  color: var(--color-cloud);
+}
+
+.glossary-badge.target {
+  color: var(--color-iris-gleam);
+  font-weight: 500;
+}
+
+.glossary-arrow {
+  color: var(--color-fog);
+  text-align: center;
+  font-size: 11px;
+}
+
+.glossary-case-tag {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-fog);
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+/* Compact / Spotlight Mode (Alt + M) */
+body.compact-mode #app {
+  max-width: 620px;
+  padding: 12px 18px 18px;
+}
+
+body.compact-mode .app-header {
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+body.compact-mode .brand-badge {
+  display: none;
+}
+
+body.compact-mode .brand-title {
+  font-size: 1.3rem;
+}
+
+body.compact-mode .translation-workspace {
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+body.compact-mode .trans-textarea {
+  min-height: 110px;
+  height: 110px;
+}
+

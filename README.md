@@ -32,19 +32,33 @@ LibreLingo implements a modular **Strategy / Adapter architecture**, allowing yo
 
 ## ✨ Key Features
 
-- 🚀 **Blazing Fast & Ultra-Lightweight**: Built with Rust; small binary size (~10 MB) and minimal memory usage.
-- 🔌 **Pluggable Multi-Provider Architecture**:
-  - **LibreTranslate (Default)**: 100% open-source machine translation. Works out of the box using free public servers, or connect to your own private Docker instance (`http://localhost:5000`).
-  - **DeepL API**: Connect your free (`:fx`) or Pro DeepL API key for state-of-the-art neural translations.
-  - Easily extensible for Google Translate, Microsoft Translator, AWS, and local AI/LLMs.
-- 🔐 **Military-Grade Key Security**: API keys are **never** stored in plain text configuration files. They are encrypted and managed directly by the **Windows Credential Manager** (or macOS Keychain / Linux Secret Service) using native OS keyrings.
-- 🎨 **Modern Fluent GUI**:
-  - Adaptive Dark and Light themes with automatic system preference detection.
-  - Automatic language detection with confidence scoring.
-  - One-click language swap (`<->`).
-  - Character counters, clear button, and one-click clipboard copy with visual feedback.
-  - Keyboard shortcuts (`Ctrl + Enter` to translate instantly, `Esc` to dismiss modals).
-- 📜 **Offline Translation History**: Local history drawer to view, reload, or copy previous translations without sending data to external tracking services.
+- 🚀 **Blazing Fast & Ultra-Lightweight**: Built with Rust; tiny binary size (~10 MB) and minimal memory footprint (~30 MB RAM).
+- 🔌 **Pluggable Multi-Provider Strategy**:
+  - **OpenRouter AI**: Access top LLMs (Google Gemini 2.0 Flash Lite, Meta Llama 3.3, Claude 3.5 Haiku, OpenAI GPT-4o-mini) with custom model selection.
+  - **Google Translate (Free Web)**: Zero-configuration instant translation without needing any API key.
+  - **DeepL API**: Free (`:fx`) & Pro API support for industry-leading neural translation.
+  - **LibreTranslate**: 100% open-source machine translation, connecting to public servers or your private Docker instance.
+- 📄 **Subtitle & Document Translation**:
+  - Dedicated subtitle parser preserving `.srt` and `.vtt` timecodes, indices, and cue blocks during batched translations.
+  - Drag-and-drop document translator supporting `.srt`, `.vtt`, `.txt`, `.md`, `.json`, and `.csv` with real-time translation progress.
+- 👁️ **Screen Capture & OCR**:
+  - Paste screenshots (`Ctrl + V`) directly into the translation workspace or drag-and-drop images.
+  - Multimodal Vision AI OCR powered by Gemini 2.0 Flash via OpenRouter.
+- 📚 **Vocabulary & Custom Glossary**:
+  - Star favorite words or sentences to save them into your vocabulary drawer.
+  - One-click export to Anki spaced-repetition flashcard decks (`.tsv`).
+  - Custom Glossary engine to enforce specific domain terminology and brand rules with word-boundary regex and case-matching options.
+  - Formality / tone switch (`Default`, `Formal`, `Casual`).
+- ⚡ **Productivity & Desktop UX**:
+  - **Always On Top (Pin Window)**: Keep LibreLingo pinned above other windows (`Alt + P`).
+  - **Compact Spotlight Mode**: Clean, distraction-free floating mode (`Alt + M`).
+  - **Instant Clipboard Translation**: Quick action chip and hotkey (`Alt + C`).
+- 🔐 **Military-Grade Key Security**: API keys are encrypted and managed directly by the **Windows Credential Manager** (or macOS Keychain / Linux Secret Service) using native OS keyrings.
+- 🎨 **Midnight Gallery Aesthetic**:
+  - Custom animated glowing scrollbars (6px slim, Iris Gleam hover glow).
+  - Searchable animated dropdown menus with smooth chevron rotations.
+  - Strict vector SVG icons across all controls (zero emojis).
+  - Dark and Light themes with automatic system preference detection.
 
 ---
 

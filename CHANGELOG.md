@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.3.0] - 2026-09-04
+
+### Added
+- **Productivity & Desktop UX**:
+  - **Always On Top (Pin Window)**: Quick pin-to-top window toggling (`Alt + P` or Header pin icon) powered by Tauri window APIs.
+  - **Compact Spotlight Mode**: Clean, distraction-free floating mode (`Alt + M`) tailored for quick lookups alongside other desktop apps.
+  - **Instant Clipboard Translation**: Quick action chip and shortcut (`Alt + C`) to instantly read and translate system clipboard contents.
+- **Document & Subtitle Translation**:
+  - **Subtitle Parser (`.srt`, `.vtt`)**: Complete timecode, cue index, and formatting preservation engine with batching support (`subtitleParser.ts`).
+  - **Document Translator Modal**: Drag-and-drop file translation (`FileTranslatorModal.ts`) supporting `.srt`, `.vtt`, `.txt`, `.md`, `.json`, `.csv` with real-time translation progress bar and one-click file download.
+- **Screen Capture & OCR**:
+  - **Image Paste & Drag-and-Drop**: Direct screenshot paste (`Ctrl + V`) and image drop into the translation workspace.
+  - **Vision AI OCR Engine**: Multimodal optical character recognition (`ocr-service.ts`) powered by Gemini 2.0 Flash via OpenRouter.
+- **Learning & Personalization**:
+  - **Saved Vocabulary & Anki Export**: Star bookmarking for saved words/sentences with full slide-over drawer (`VocabularyDrawer.ts`) and Anki flashcard deck export (`.tsv`).
+  - **Custom Glossary & Terminology Rules**: Custom terminology substitution engine (`glossary.ts` & `GlossaryModal.ts`) with word-boundary regex and case-sensitivity controls.
+  - **Formality / Tone Selector**: Segmented tone control (`Default`, `Formal`, `Casual`) for fine-grained translation register.
+- **Design System & Aesthetics**:
+  - Custom animated glowing scrollbars (6px slim, Midnight Gallery aesthetic with Iris Gleam hover glow).
+  - Searchable animated dropdown menus with smooth chevron rotations.
+  - Strict vector SVG icons across all controls (zero emojis).
+
+---
+
 ## [0.2.0] - 2026-09-04
 
 ### Added

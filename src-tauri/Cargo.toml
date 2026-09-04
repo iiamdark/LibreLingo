@@ -1,6 +1,6 @@
 [package]
 name = "librelingo"
-version = "0.2.0"
+version = "0.3.0"
 description = "Cross-platform open-source desktop translator built with Rust and Tauri"
 authors = ["LibreLingo Contributors"]
 license = "MIT"

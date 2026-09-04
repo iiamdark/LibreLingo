@@ -4,6 +4,10 @@ import { createHeader } from './components/Header';
 import { createTranslationBox } from './components/TranslationBox';
 import { createSettingsModal } from './components/SettingsModal';
 import { createHistoryDrawer } from './components/HistoryDrawer';
+import { createFileTranslatorModal } from './components/FileTranslatorModal';
+import { createVocabularyDrawer } from './components/VocabularyDrawer';
+import { createGlossaryModal } from './components/GlossaryModal';
+import { applyGlossary } from './services/glossary';
 
 class LibreLingoApp {
   private container: HTMLElement;
@@ -16,6 +20,9 @@ class LibreLingoApp {
   private isTranslating: boolean = false;
   private errorMessage?: string;
   private isDark: boolean = true;
+  private isPinned: boolean = false;
+  private isCompactMode: boolean = false;
+  private formality: 'default' | 'formal' | 'informal' = 'default';
   
   private providers: ProviderMetadata[] = [];
   private languages: LanguageInfo[] = [];
@@ -49,6 +56,17 @@ class LibreLingoApp {
     this.isDark = !this.isDark;
     document.documentElement.setAttribute('data-theme', this.isDark ? 'dark' : 'light');
     localStorage.setItem('librelingo_theme', this.isDark ? 'dark' : 'light');
+  }
+
+  private async togglePin() {
+    this.isPinned = !this.isPinned;
+    await api.setAlwaysOnTop(this.isPinned);
+    this.render();
+  }
+
+  private toggleCompactMode() {
+    this.isCompactMode = !this.isCompactMode;
+    document.body.classList.toggle('compact-mode', this.isCompactMode);
   }
 
   private async initData() {
@@ -97,12 +115,40 @@ class LibreLingoApp {
         e.preventDefault();
         this.executeTranslation();
       }
+      // Alt + M: Toggle Compact Spotlight mode
+      if (e.altKey && (e.key === 'm' || e.key === 'M')) {
+        e.preventDefault();
+        this.toggleCompactMode();
+      }
+      // Alt + P: Toggle Pin to top
+      if (e.altKey && (e.key === 'p' || e.key === 'P')) {
+        e.preventDefault();
+        this.togglePin();
+      }
+      // Alt + C: Instant Clipboard translation
+      if (e.altKey && (e.key === 'c' || e.key === 'C')) {
+        e.preventDefault();
+        this.translateClipboard();
+      }
       // Escape closes modal or drawer
       if (e.key === 'Escape') {
         if (this.activeModal) this.closeModal();
         if (this.activeDrawer) this.closeDrawer();
       }
     });
+  }
+
+  private async translateClipboard() {
+    try {
+      const text = await navigator.clipboard.readText();
+      if (text) {
+        this.sourceText = text;
+        this.render();
+        this.executeTranslation();
+      }
+    } catch (err) {
+      console.warn('Clipboard read failed:', err);
+    }
   }
 
   private onSourceChange(text: string) {
@@ -134,14 +180,26 @@ class LibreLingoApp {
     this.updateTranslationUI();
 
     try {
+      // If formality tone is specified and AI provider is active, annotate text
+      let queryText = this.sourceText;
+      if (this.formality === 'formal') {
+        queryText = `[Tone: Formal & Polite]\n${this.sourceText}`;
+      } else if (this.formality === 'informal') {
+        queryText = `[Tone: Casual & Colloquial]\n${this.sourceText}`;
+      }
+
       const res = await api.translate({
-        text: this.sourceText,
+        text: queryText,
         source_lang: this.sourceLang,
         target_lang: this.targetLang,
         provider_id: this.currentProviderId,
       });
 
-      this.translatedText = res.translated_text;
+      // Apply Custom Glossary Rules to ensure domain terminology
+      let translated = res.translated_text;
+      // Strip formality prompt tag if provider echoed it
+      translated = translated.replace(/^\[Tone:.*?\]\n?/i, '');
+      this.translatedText = applyGlossary(translated);
       this.detectedLang = res.detected_source_lang;
       
       // Refresh history in background
@@ -171,6 +229,55 @@ class LibreLingoApp {
     if (this.sourceText.trim()) {
       this.executeTranslation();
     }
+  }
+
+  private openFileTranslator() {
+    if (this.activeModal) this.closeModal();
+
+    const modal = createFileTranslatorModal({
+      languages: this.languages,
+      currentProviderId: this.currentProviderId,
+      targetLang: this.targetLang,
+      onClose: () => this.closeModal(),
+    });
+
+    this.activeModal = modal;
+    document.body.appendChild(modal);
+  }
+
+  private openVocabulary() {
+    if (this.activeDrawer) this.closeDrawer();
+
+    const drawer = createVocabularyDrawer({
+      onSelectItem: (item) => {
+        this.sourceText = item.sourceText;
+        this.translatedText = item.translatedText;
+        this.sourceLang = item.sourceLang;
+        this.targetLang = item.targetLang;
+        this.render();
+      },
+      onClose: () => this.closeDrawer(),
+    });
+
+    this.activeDrawer = drawer;
+    document.body.appendChild(drawer);
+  }
+
+  private openGlossary() {
+    if (this.activeModal) this.closeModal();
+
+    const modal = createGlossaryModal({
+      onClose: () => this.closeModal(),
+      onGlossaryUpdated: () => {
+        if (this.translatedText) {
+          this.translatedText = applyGlossary(this.translatedText);
+          this.updateTranslationUI();
+        }
+      }
+    });
+
+    this.activeModal = modal;
+    document.body.appendChild(modal);
   }
 
   private openSettings() {
@@ -297,9 +404,14 @@ class LibreLingoApp {
     const header = createHeader({
       currentProviderName: providerName,
       isDark: this.isDark,
+      isPinned: this.isPinned,
       onToggleTheme: () => this.toggleTheme(),
       onOpenSettings: () => this.openSettings(),
       onOpenHistory: () => this.openHistory(),
+      onOpenFileTranslator: () => this.openFileTranslator(),
+      onOpenVocabulary: () => this.openVocabulary(),
+      onOpenGlossary: () => this.openGlossary(),
+      onTogglePin: () => this.togglePin(),
     });
 
     // Translation Box
@@ -312,6 +424,7 @@ class LibreLingoApp {
       detectedLang: this.detectedLang,
       isTranslating: this.isTranslating,
       errorMessage: this.errorMessage,
+      formality: this.formality,
       onSourceChange: (text) => this.onSourceChange(text),
       onSourceLangChange: (lang) => {
         this.sourceLang = lang;
@@ -329,6 +442,11 @@ class LibreLingoApp {
         this.updateTranslationUI();
       },
       onOpenSettings: () => this.openSettings(),
+      onFormalityChange: (f) => {
+        this.formality = f;
+        if (this.sourceText.trim()) this.executeTranslation();
+      },
+      onTranslateClipboard: () => this.translateClipboard(),
     });
 
     this.container.appendChild(header);

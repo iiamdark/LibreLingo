@@ -317,5 +317,16 @@ export const api = {
 
   async clearHistory(): Promise<void> {
     return await invokeTauri<void>('clear_history');
+  },
+
+  async setAlwaysOnTop(pinned: boolean): Promise<void> {
+    if (isTauri()) {
+      try {
+        const { getCurrentWindow } = await import('@tauri-apps/api/window');
+        await getCurrentWindow().setAlwaysOnTop(pinned);
+      } catch (e) {
+        console.warn('Failed to set always on top:', e);
+      }
+    }
   }
 };

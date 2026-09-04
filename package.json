@@ -1,7 +1,7 @@
 {
   "name": "librelingo",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
   "description": "Cross-platform open-source desktop translator built with Rust and Tauri",
   "scripts": {
