@@ -1,5 +1,7 @@
 pub mod deepl;
+pub mod google;
 pub mod libretranslate;
+pub mod openrouter;
 
 use crate::error::AppError;
 use crate::models::{DetectedLanguage, LanguageInfo, ProviderMetadata, TranslationRequest, TranslationResponse};
@@ -9,7 +11,9 @@ use std::collections::HashMap;
 use std::sync::Arc;
 
 pub use deepl::DeepLProvider;
+pub use google::GoogleTranslateProvider;
 pub use libretranslate::LibreTranslateProvider;
+pub use openrouter::OpenRouterProvider;
 
 /// Strategy pattern interface that all translation providers must implement.
 #[async_trait]
@@ -50,8 +54,10 @@ impl ProviderRegistry {
         };
 
         // Register default providers
+        registry.register(Arc::new(GoogleTranslateProvider::new()));
         registry.register(Arc::new(LibreTranslateProvider::new()));
         registry.register(Arc::new(DeepLProvider::new()));
+        registry.register(Arc::new(OpenRouterProvider::new()));
 
         registry
     }
@@ -88,15 +94,10 @@ impl ProviderRegistry {
             })
             .collect();
 
-        // Ensure LibreTranslate is ranked first by default
-        list.sort_by(|a, b| {
-            if a.id == "libretranslate" {
-                std::cmp::Ordering::Less
-            } else if b.id == "libretranslate" {
-                std::cmp::Ordering::Greater
-            } else {
-                a.name.cmp(&b.name)
-            }
+        // Priority order: Google (instant free) -> LibreTranslate (100% open source) -> DeepL -> OpenRouter
+        let order = ["google", "libretranslate", "deepl", "openrouter"];
+        list.sort_by_key(|p| {
+            order.iter().position(|&x| x == p.id).unwrap_or(99)
         });
 
         list

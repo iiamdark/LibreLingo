@@ -33,7 +33,7 @@ export function createSettingsModal(props: SettingsModalProps): HTMLElement {
           <select id="provider-select" class="form-select">
             ${props.providers.map(p => `
               <option value="${p.id}" ${p.id === selectedProviderId ? 'selected' : ''}>
-                ${p.name} ${p.requires_api_key ? '(Key Required)' : '(Free/Optional Key)'}
+                ${p.name} ${p.requires_api_key ? '(Key Required)' : '(Free / No Key)'}
               </option>
             `).join('')}
           </select>
@@ -51,7 +51,7 @@ export function createSettingsModal(props: SettingsModalProps): HTMLElement {
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
           </svg>
           <div>
-            <strong>Secure Cryptographic Storage:</strong> API keys are never saved in plain text in config files. They are encrypted and stored directly in your operating system's native vault (<em>Windows Credential Manager / OS Keyring</em>).
+            <strong>Secure Cryptographic Storage:</strong> API keys are never stored in plain text. When running on desktop, they are secured inside the <em>Windows Credential Manager / OS Keyring</em>.
           </div>
         </div>
       </div>
@@ -66,9 +66,35 @@ export function createSettingsModal(props: SettingsModalProps): HTMLElement {
   function renderProviderFields(meta?: ProviderMetadata): string {
     if (!meta) return '';
 
+    if (meta.id === 'google') {
+      return `
+        <div class="form-group" style="padding: 12px; background: var(--bg-surface-elevated); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+          <span style="font-size: 0.85rem; color: var(--text-secondary);">
+            ✨ <strong>Google Translate (Free Web)</strong> is ready to use out of the box with zero configuration and no API keys required.
+          </span>
+        </div>
+      `;
+    }
+
     let html = '';
 
-    if (meta.allows_custom_url) {
+    if (meta.id === 'openrouter') {
+      html += `
+        <div class="form-group">
+          <label class="form-label" for="custom-url-input">AI Model Name</label>
+          <input
+            type="text"
+            id="custom-url-input"
+            class="form-input"
+            placeholder="google/gemini-2.0-flash-lite-001"
+            value="${meta.custom_url || 'google/gemini-2.0-flash-lite-001'}"
+          />
+          <span class="form-hint">
+            Specify any OpenRouter model (e.g. <code>google/gemini-2.0-flash-lite-001</code>, <code>meta-llama/llama-3.3-70b-instruct:free</code>, or <code>openai/gpt-4o-mini</code>).
+          </span>
+        </div>
+      `;
+    } else if (meta.allows_custom_url) {
       html += `
         <div class="form-group">
           <label class="form-label" for="custom-url-input">Server Endpoint URL (LibreTranslate Instance)</label>
@@ -80,7 +106,7 @@ export function createSettingsModal(props: SettingsModalProps): HTMLElement {
             value="${meta.custom_url || ''}"
           />
           <span class="form-hint">
-            Leave blank to use the default free public instance, or enter your self-hosted Docker/local URL (e.g. <code>http://localhost:5000</code>).
+            Enter your self-hosted Docker URL (e.g. <code>http://localhost:5000</code>) or a public mirror.
           </span>
         </div>
       `;
@@ -104,8 +130,10 @@ export function createSettingsModal(props: SettingsModalProps): HTMLElement {
           </button>
         </div>
         <span class="form-hint">
-          ${meta.id === 'deepl' 
-            ? 'For DeepL Free accounts, the key ends with <code>:fx</code> (e.g., <code>xxxx-xxxx:fx</code>). DeepL Pro keys do not have a suffix.' 
+          ${meta.id === 'openrouter'
+            ? 'Get an API key from <a href="https://openrouter.ai/keys" target="_blank" style="color: var(--primary)">openrouter.ai/keys</a> (starts with <code>sk-or-v1-...</code>).'
+            : meta.id === 'deepl' 
+            ? 'For DeepL Free accounts, the key ends with <code>:fx</code> (e.g., <code>xxxx-xxxx:fx</code>). DeepL Pro keys have no suffix.' 
             : 'If your LibreTranslate server requires authentication, enter the API key here.'}
         </span>
       </div>
