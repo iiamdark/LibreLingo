@@ -19,7 +19,7 @@ export function createSettingsModal(props: SettingsModalProps): HTMLElement {
       <div class="modal-header">
         <h2 class="modal-title">Provider & API Settings</h2>
         <button class="icon-btn" id="modal-close-btn" title="Close">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="18" y1="6" x2="6" y2="18"></line>
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
@@ -47,7 +47,7 @@ export function createSettingsModal(props: SettingsModalProps): HTMLElement {
 
         <!-- Security Badge -->
         <div class="security-badge">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
           </svg>
           <div>
@@ -68,9 +68,14 @@ export function createSettingsModal(props: SettingsModalProps): HTMLElement {
 
     if (meta.id === 'google') {
       return `
-        <div class="form-group" style="padding: 12px; background: var(--bg-surface-elevated); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-          <span style="font-size: 0.85rem; color: var(--text-secondary);">
-            ✨ <strong>Google Translate (Free Web)</strong> is ready to use out of the box with zero configuration and no API keys required.
+        <div class="form-group" style="padding: 14px; background: var(--color-abyss); border-radius: var(--radius-md); border: 1px solid var(--border-subtle); display: flex; align-items: flex-start; gap: 10px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-iris-gleam)" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span style="font-size: 0.85rem; color: var(--color-ash); line-height: 1.5;">
+            <strong style="color: var(--color-pure);">Google Translate (Free Web)</strong> is ready to use out of the box with zero configuration and no API keys required.
           </span>
         </div>
       `;
@@ -115,23 +120,26 @@ export function createSettingsModal(props: SettingsModalProps): HTMLElement {
     html += `
       <div class="form-group">
         <label class="form-label" for="api-key-input">
-          API Key ${meta.requires_api_key ? '<span style="color: var(--error)">* Required</span>' : '(Optional)'}
+          API Key ${meta.requires_api_key ? '<span style="color: var(--color-error)">* Required</span>' : '(Optional)'}
         </label>
         <div style="position: relative; display: flex; align-items: center;">
           <input
             type="password"
             id="api-key-input"
             class="form-input"
-            style="width: 100%; padding-right: 40px;"
+            style="width: 100%; padding-right: 42px;"
             placeholder="${meta.has_configured_key ? '•••••••••••••••••••••••• (Key saved securely)' : 'Paste your API key here'}"
           />
-          <button type="button" id="toggle-key-visibility" class="icon-btn" style="position: absolute; right: 4px;" title="Show/hide key">
-            👁️
+          <button type="button" id="toggle-key-visibility" class="icon-btn" style="position: absolute; right: 4px; border: none; padding: 6px;" title="Show/hide key">
+            <svg id="eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+              <circle cx="12" cy="12" r="3"></circle>
+            </svg>
           </button>
         </div>
         <span class="form-hint">
           ${meta.id === 'openrouter'
-            ? 'Get an API key from <a href="https://openrouter.ai/keys" target="_blank" style="color: var(--primary)">openrouter.ai/keys</a> (starts with <code>sk-or-v1-...</code>).'
+            ? 'Get an API key from <a href="https://openrouter.ai/keys" target="_blank" style="color: var(--color-iris-gleam); text-decoration: underline;">openrouter.ai/keys</a> (starts with <code>sk-or-v1-...</code>).'
             : meta.id === 'deepl' 
             ? 'For DeepL Free accounts, the key ends with <code>:fx</code> (e.g., <code>xxxx-xxxx:fx</code>). DeepL Pro keys have no suffix.' 
             : 'If your LibreTranslate server requires authentication, enter the API key here.'}
@@ -162,11 +170,27 @@ export function createSettingsModal(props: SettingsModalProps): HTMLElement {
   function attachVisibilityToggle() {
     const toggleBtn = backdrop.querySelector('#toggle-key-visibility');
     const keyInput = backdrop.querySelector('#api-key-input') as HTMLInputElement;
+    const eyeIcon = backdrop.querySelector('#eye-icon');
+    
     toggleBtn?.addEventListener('click', () => {
       if (keyInput.type === 'password') {
         keyInput.type = 'text';
+        if (eyeIcon) {
+          eyeIcon.innerHTML = `
+            <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
+            <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
+            <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
+            <line x1="2" y1="2" x2="22" y2="22"></line>
+          `;
+        }
       } else {
         keyInput.type = 'password';
+        if (eyeIcon) {
+          eyeIcon.innerHTML = `
+            <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          `;
+        }
       }
     });
   }

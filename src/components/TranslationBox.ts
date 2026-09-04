@@ -1,4 +1,5 @@
 import { LanguageInfo } from '../services/tauri-api';
+import { createAnimatedDropdown, DropdownOption } from './AnimatedDropdown';
 
 export interface TranslationBoxProps {
   languages: LanguageInfo[];
@@ -21,29 +22,26 @@ export function createTranslationBox(props: TranslationBoxProps): HTMLElement {
   const container = document.createElement('div');
   container.className = 'translator-wrapper';
 
-  const renderLanguageOptions = (selected: string, isSource: boolean) => {
-    let html = '';
-    if (isSource) {
-      html += `<option value="auto" ${selected === 'auto' ? 'selected' : ''}>✨ Auto-detect language</option>`;
-    }
-    props.languages.forEach(l => {
-      html += `<option value="${l.code}" ${selected === l.code ? 'selected' : ''}>${l.name} (${l.code.toUpperCase()})</option>`;
-    });
-    return html;
-  };
+  // Build source options with Auto-detect option
+  const sourceOptions: DropdownOption[] = [
+    { code: 'auto', name: 'Auto-detect language', isAuto: true },
+    ...props.languages.map(l => ({ code: l.code, name: l.name }))
+  ];
+
+  // Build target options
+  const targetOptions: DropdownOption[] = props.languages.map(l => ({
+    code: l.code,
+    name: l.name
+  }));
 
   container.innerHTML = `
-    <!-- Controls / Language Selector Bar -->
+    <!-- Controls / Animated Dropdowns Bar -->
     <div class="controls-bar">
       <div class="lang-select-group">
-        <div class="lang-dropdown">
-          <select id="source-lang-select" class="form-select" style="width: 100%;">
-            ${renderLanguageOptions(props.sourceLang, true)}
-          </select>
-        </div>
+        <div class="lang-dropdown-slot" id="source-dropdown-slot"></div>
 
         <button class="swap-btn" id="swap-lang-btn" title="Swap languages">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <polyline points="17 1 21 5 17 9"></polyline>
             <path d="M3 5h18"></path>
             <polyline points="7 23 3 19 7 15"></polyline>
@@ -51,11 +49,7 @@ export function createTranslationBox(props: TranslationBoxProps): HTMLElement {
           </svg>
         </button>
 
-        <div class="lang-dropdown">
-          <select id="target-lang-select" class="form-select" style="width: 100%;">
-            ${renderLanguageOptions(props.targetLang, false)}
-          </select>
-        </div>
+        <div class="lang-dropdown-slot" id="target-dropdown-slot"></div>
       </div>
     </div>
 
@@ -66,7 +60,7 @@ export function createTranslationBox(props: TranslationBoxProps): HTMLElement {
         <div class="pane-header">
           <span class="pane-label">Source Text</span>
           <button class="action-chip" id="clear-text-btn" title="Clear text">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <line x1="18" y1="6" x2="6" y2="18"></line>
               <line x1="6" y1="6" x2="18" y2="18"></line>
             </svg>
@@ -84,8 +78,8 @@ export function createTranslationBox(props: TranslationBoxProps): HTMLElement {
         <div class="pane-footer">
           <span class="char-counter" id="source-char-counter">${props.sourceText.length} characters</span>
           <div class="pane-actions">
-            <button class="action-chip" id="paste-btn">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button class="action-chip" id="paste-btn" title="Paste from clipboard">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
                 <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
               </svg>
@@ -101,7 +95,7 @@ export function createTranslationBox(props: TranslationBoxProps): HTMLElement {
           <span class="pane-label">Translation</span>
           <div class="pane-actions">
             <button class="action-chip" id="copy-trans-btn" title="Copy to clipboard">
-              <svg id="copy-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg id="copy-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                 <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
               </svg>
@@ -122,8 +116,12 @@ export function createTranslationBox(props: TranslationBoxProps): HTMLElement {
             ${props.detectedLang ? `Detected: <strong>${props.detectedLang.toUpperCase()}</strong> &bull; ` : ''}
             ${props.translatedText.length} characters
           </span>
-          <span id="translation-status-indicator" style="font-size: 0.75rem; color: var(--text-muted)">
-            ${props.isTranslating ? '⏳ Translating...' : 'Ready'}
+          <span id="translation-status-indicator" class="status-indicator">
+            ${props.isTranslating ? `
+              <svg class="spin" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+              </svg> Translating...
+            ` : 'Ready'}
           </span>
         </div>
       </div>
@@ -133,17 +131,46 @@ export function createTranslationBox(props: TranslationBoxProps): HTMLElement {
     <div id="status-banner-container">
       ${props.errorMessage ? `
         <div class="status-banner error">
-          <span>⚠️ ${props.errorMessage}</span>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span>${props.errorMessage}</span>
+          </div>
           <button id="banner-action-btn">Configure Provider</button>
         </div>
       ` : ''}
     </div>
   `;
 
-  // Attach event listeners
+  // Mount source animated dropdown
+  const sourceSlot = container.querySelector('#source-dropdown-slot') as HTMLElement;
+  const sourceDropdown = createAnimatedDropdown({
+    id: 'source-lang-dropdown',
+    options: sourceOptions,
+    selectedCode: props.sourceLang,
+    onSelect: (code) => {
+      props.onSourceLangChange(code);
+    }
+  });
+  sourceSlot.appendChild(sourceDropdown);
+
+  // Mount target animated dropdown
+  const targetSlot = container.querySelector('#target-dropdown-slot') as HTMLElement;
+  const targetDropdown = createAnimatedDropdown({
+    id: 'target-lang-dropdown',
+    options: targetOptions,
+    selectedCode: props.targetLang,
+    onSelect: (code) => {
+      props.onTargetLangChange(code);
+    }
+  });
+  targetSlot.appendChild(targetDropdown);
+
+  // Event handlers
   const sourceTextarea = container.querySelector('#source-textarea') as HTMLTextAreaElement;
-  const sourceLangSelect = container.querySelector('#source-lang-select') as HTMLSelectElement;
-  const targetLangSelect = container.querySelector('#target-lang-select') as HTMLSelectElement;
   const swapBtn = container.querySelector('#swap-lang-btn') as HTMLButtonElement;
   const clearBtn = container.querySelector('#clear-text-btn') as HTMLButtonElement;
   const pasteBtn = container.querySelector('#paste-btn') as HTMLButtonElement;
@@ -156,16 +183,8 @@ export function createTranslationBox(props: TranslationBoxProps): HTMLElement {
     props.onSourceChange(sourceTextarea.value);
   });
 
-  sourceLangSelect.addEventListener('change', () => {
-    props.onSourceLangChange(sourceLangSelect.value);
-  });
-
-  targetLangSelect.addEventListener('change', () => {
-    props.onTargetLangChange(targetLangSelect.value);
-  });
-
   swapBtn.addEventListener('click', () => {
-    if (sourceLangSelect.value !== 'auto') {
+    if (props.sourceLang !== 'auto') {
       props.onSwapLanguages();
     }
   });

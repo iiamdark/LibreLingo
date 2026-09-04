@@ -258,14 +258,25 @@ class LibreLingoApp {
     }
 
     if (statusIndicator) {
-      statusIndicator.textContent = this.isTranslating ? '⏳ Translating...' : 'Ready';
+      statusIndicator.innerHTML = this.isTranslating ? `
+        <svg class="spin" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
+        </svg> Translating...
+      ` : 'Ready';
     }
 
     if (bannerContainer) {
       if (this.errorMessage) {
         bannerContainer.innerHTML = `
           <div class="status-banner error">
-            <span>⚠️ ${this.errorMessage}</span>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <span>${this.errorMessage}</span>
+            </div>
             <button id="banner-action-btn">Configure Provider</button>
           </div>
         `;
