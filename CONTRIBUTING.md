@@ -31,7 +31,7 @@ We welcome all kinds of contributions: new translation provider adapters, bug fi
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-username/librelingo.git
+   git clone https://github.com/iiamdark/LibreLingo.git
    cd librelingo
    ```
 2. Install frontend dependencies:

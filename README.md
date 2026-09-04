@@ -2,8 +2,8 @@
 
 <div align="center">
 
-[![CI](https://github.com/your-username/librelingo/actions/workflows/ci.yml/badge.svg)](https://github.com/your-username/librelingo/actions/workflows/ci.yml)
-[![Release](https://img.shields.io/github/v/release/your-username/librelingo?include_prereleases&style=flat-square)](https://github.com/your-username/librelingo/releases)
+[![CI](https://github.com/iiamdark/LibreLingo/actions/workflows/ci.yml/badge.svg)](https://github.com/iiamdark/LibreLingo/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/iiamdark/LibreLingo?include_prereleases&style=flat-square)](https://github.com/iiamdark/LibreLingo/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 [![Rust](https://img.shields.io/badge/Rust-1.75%2B-orange?style=flat-square&logo=rust)](https://www.rust-lang.org/)
 [![Tauri](https://img.shields.io/badge/Tauri-v2-blue?style=flat-square&logo=tauri)](https://v2.tauri.app/)
@@ -11,7 +11,7 @@
 
 **A modern, lightweight, privacy-conscious open-source desktop translator built with Rust & Tauri v2.**
 
-[Download Latest Release](https://github.com/your-username/librelingo/releases) &bull;
+[Download Latest Release](https://github.com/iiamdark/LibreLingo/releases) &bull;
 [Features](#-key-features) &bull;
 [Architecture](#-architecture) &bull;
 [Development](#-getting-started-locally) &bull;
@@ -160,7 +160,7 @@ LibreLingo/
 ### Clone and Install
 
 ```bash
-git clone https://github.com/your-username/librelingo.git
+git clone https://github.com/iiamdark/LibreLingo.git
 cd librelingo
 npm install
 ```

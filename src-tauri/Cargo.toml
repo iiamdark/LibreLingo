@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Cross-platform open-source desktop translator built with Rust and Tauri"
 authors = ["LibreLingo Contributors"]
 license = "MIT"
-repository = "https://github.com/your-username/librelingo"
+repository = "https://github.com/iiamdark/LibreLingo"
 edition = "2021"
 
 [lib]
