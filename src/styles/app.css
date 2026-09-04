@@ -63,11 +63,57 @@
   --border-hover: rgba(0, 0, 0, 0.18);
 }
 
-/* Base Reset */
+/* Base Reset & Smooth Scroll */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.14) transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* ==========================================================================
+   Animated Custom Scrollbars (Slim, Radiant, Midnight Gallery Aesthetic)
+   ========================================================================== */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-pill);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-iris-gleam);
+  box-shadow: 0 0 10px rgba(132, 125, 255, 0.55);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: #a39eff;
+  box-shadow: 0 0 14px rgba(132, 125, 255, 0.8);
+}
+
+[data-theme="light"] * {
+  scrollbar-color: rgba(0, 0, 0, 0.18) transparent;
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.16);
+}
+
+[data-theme="light"] ::-webkit-scrollbar-thumb:hover {
+  background: var(--color-iris-gleam);
 }
 
 body {
